@@ -1,0 +1,14 @@
+{
+  "name": "kawatai-gateway",
+  "version": "1.0.0",
+  "description": "Dynamic Routing Gateway for KAWAT Mobile Agent",
+  "main": "api/config.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "node api/config.js"
+  },
+  "dependencies": {},
+  "keywords": ["ai", "agent", "gateway", "heroku", "vercel"],
+  "author": "Kawat AI",
+  "license": "MIT"
+}

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>KAWAT AI Gateway</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(22, 27, 46, 0.7);
+      --border: rgba(255, 255, 255, 0.08);
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.35);
+      --success: #10b981;
+      --danger: #ef4444;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .glow-sphere {
+      position: absolute;
+      width: 450px;
+      height: 450px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .card {
+      position: relative;
+      z-index: 1;
+      background: var(--card-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      max-width: 480px;
+      width: 100%;
+      padding: 32px 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .logo-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 800;
+      color: white;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    }
+    .header-text h1 { font-size: 20px; font-weight: 700; color: #fff; }
+    .header-text p { font-size: 13px; color: var(--text-muted); }
+
+    .status-panel {
+      background: rgba(10, 14, 25, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 24px;
+    }
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .status-label { font-size: 13px; color: var(--text-muted); }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .url-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: #05070e;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: #60a5fa;
+      word-break: break-all;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn-copy {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 2px 6px;
+    }
+    .btn-copy:hover { color: #fff; }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .input-field {
+      width: 100%;
+      background: rgba(10, 14, 25, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-field:focus { border-color: var(--primary); }
+    .input-hint { font-size: 11px; color: var(--text-muted); margin-top: 5px; }
+
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .toast {
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      text-align: center;
+      display: none;
+    }
+    .toast.success { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .toast.error { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 24px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-sphere"></div>
+  <div class="card">
+    <div class="header">
+      <div class="logo-badge">⚡</div>
+      <div class="header-text">
+        <h1>KAWAT AI Gateway</h1>
+        <p>Fixed Discovery Router for Mobile Agent</p>
+      </div>
+    </div>
+
+    <div class="status-panel">
+      <div class="status-row">
+        <span class="status-label">Active Backend Status</span>
+        <span class="status-pill" id="health-pill">
+          <span class="pulse-dot" id="pulse-dot"></span>
+          <span id="health-text">Checking...</span>
+        </span>
+      </div>
+      <div class="url-display">
+        <span id="active-url">Loading...</span>
+        <button class="btn-copy" onclick="copyUrl()" title="Copy URL">📋</button>
+      </div>
+    </div>
+
+    <form id="update-form" onsubmit="handleUpdate(event)">
+      <div class="form-group">
+        <label for="new-url">New Heroku Backend URL</label>
+        <input type="text" id="new-url" class="input-field" placeholder="https://your-new-app.herokuapp.com" required />
+        <div class="input-hint">Whenever your Heroku account changes each month, paste the new URL here.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="admin-secret">Admin Secret Key</label>
+        <input type="password" id="admin-secret" class="input-field" placeholder="Enter secret (default: kawat2026)" value="kawat2026" required />
+      </div>
+
+      <button type="submit" class="btn-primary" id="btn-submit">
+        ⚡ Update Active Backend
+      </button>
+
+      <div class="toast" id="toast"></div>
+    </form>
+
+    <div class="footer-note">
+      📱 <b>Phone App Auto-Sync</b>: Your mobile app queries this gateway on launch and connects directly without needing an APK update!
+    </div>
+  </div>
+
+  <script>
+    let currentBackend = '';
+
+    async function loadConfig() {
+      try {
+        const res = await fetch('/api/config?check_health=true');
+        const data = await res.json();
+        currentBackend = data.backend_url;
+        document.getElementById('active-url').textContent = currentBackend;
+        
+        const healthText = document.getElementById('health-text');
+        const pulseDot = document.getElementById('pulse-dot');
+        const healthPill = document.getElementById('health-pill');
+
+        if (data.health === 'online') {
+          healthText.textContent = 'Online & Ready';
+          pulseDot.style.background = '#10b981';
+          healthPill.style.color = '#10b981';
+        } else {
+          healthText.textContent = 'Heroku Sleeping / Connecting';
+          pulseDot.style.background = '#f59e0b';
+          healthPill.style.color = '#f59e0b';
+        }
+      } catch (e) {
+        document.getElementById('active-url').textContent = 'Error connecting to gateway';
+        document.getElementById('health-text').textContent = 'Offline';
+      }
+    }
+
+    async function handleUpdate(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-submit');
+      const toast = document.getElementById('toast');
+      const url = document.getElementById('new-url').value.trim();
+      const secret = document.getElementById('admin-secret').value.trim();
+
+      btn.disabled = true;
+      btn.textContent = 'Updating...';
+      toast.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/set-backend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url, secret })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          toast.className = 'toast success';
+          toast.textContent = '✅ ' + (data.message || 'Updated successfully!');
+          toast.style.display = 'block';
+          document.getElementById('new-url').value = '';
+          loadConfig();
+        } else {
+          toast.className = 'toast error';
+          toast.textContent = '❌ ' + (data.error || 'Failed to update.');
+          toast.style.display = 'block';
+        }
+      } catch (err) {
+        toast.className = 'toast error';
+        toast.textContent = '❌ Network error.';
+        toast.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '⚡ Update Active Backend';
+      }
+    }
+
+    function copyUrl() {
+      navigator.clipboard.writeText(currentBackend);
+      alert('Copied: ' + currentBackend);
+    }
+
+    loadConfig();
+  </script>
+</body>
+</html>
