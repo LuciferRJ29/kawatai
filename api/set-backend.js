@@ -1,7 +1,7 @@
 // Vercel Serverless Function: POST /api/set-backend
 // Allows updating the active Heroku backend URL on the fly
 
-let currentBackendUrl = process.env.HEROKU_BACKEND_URL || "https://mobile-antigravity.herokuapp.com";
+let currentBackendUrl = process.env.HEROKU_BACKEND_URL || "https://kawatai-6939f47f3b1b.herokuapp.com/";
 const ADMIN_SECRET = process.env.ADMIN_SECRET || "kawat2026";
 
 module.exports = async (req, res) => {
